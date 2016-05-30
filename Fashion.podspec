@@ -21,6 +21,4 @@ Pod::Spec.new do |s|
 
   s.ios.frameworks = 'UIKit', 'Foundation'
   s.osx.frameworks = 'Cocoa', 'Foundation'
-
-  s.dependency 'Sugar'
 end
