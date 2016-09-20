@@ -8,14 +8,14 @@ public protocol StyleManaging {
    - Parameter name: The name of the style you can apply to your view afterwards.
    - Parameter stylization: Closure where you can apply styles.
    */
-  func register<T: Styleable>(name: StringConvertible, stylization: T -> Void)
+  func register<T: Styleable>(_ name: StringConvertible, stylization: @escaping (T) -> Void)
 
   /**
    Unregisters stylization closure with the specified name.
 
    - Parameter name: The name of the style you can apply to your view afterwards.
    */
-  func unregister(name: StringConvertible)
+  func unregister(_ name: StringConvertible)
 
   /**
    Registers stylization closure on type label.
@@ -24,12 +24,12 @@ public protocol StyleManaging {
 
    - Parameter stylization: Closure where you can apply styles.
    */
-  func share<T: Styleable>(stylization: T -> Void)
+  func share<T: Styleable>(_ stylization:  @escaping (T) -> Void)
 
   /**
    Unregisters shared stylization closure for the specified type.
 
    - Parameter type: The type you want to unregister.
    */
-  func unshare<T: Styleable>(type: T.Type)
+  func unshare<T: Styleable>(_ type: T.Type)
 }
