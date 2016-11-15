@@ -1,26 +1,49 @@
 import UIKit
 
+extension DispatchQueue {
+    
+    private static var _onceTracker = [String]()
+    
+    /**
+     Executes a block of code, associated with a unique token, only once.  The code is thread safe and will
+     only execute the code once even in the presence of multithreaded calls.
+     
+     - parameter token: A unique reverse DNS style name such as com.vectorform.<name> or a GUID
+     - parameter block: Block to execute once
+     */
+    public class func once(_ token: String, block: (Void)->Void) {
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
+        
+        if _onceTracker.contains(token) {
+            return
+        }
+        
+        _onceTracker.append(token)
+        block()
+    }
+}
+
+
 extension UIView {
 
-  private struct AssociatedKeys {
+  fileprivate struct AssociatedKeys {
     static var stylesApplied = "fashion_StylesAppliedAssociatedKey"
   }
 
   // MARK: - Method Swizzling
 
-  override public class func initialize() {
+  override open class func initialize() {
     struct Static {
-      static var token: dispatch_once_t = 0
+      static var token: Int = 0
     }
 
     if self !== UIView.self { return }
-
-    dispatch_once(&Static.token) {
+    DispatchQueue.once(AssociatedKeys.stylesApplied) {
       Swizzler.swizzle("willMoveToSuperview:", cls: self, prefix: "fashion")
     }
   }
 
-  func fashion_willMoveToSuperview(newSuperview: UIView?) {
+  func fashion_willMoveToSuperview(_ newSuperview: UIView?) {
     fashion_willMoveToSuperview(newSuperview)
 
     guard runtimeStyles else {
@@ -38,7 +61,7 @@ extension UIView {
     }
   }
 
-  private var stylesApplied: Bool? {
+  fileprivate var stylesApplied: Bool? {
     get {
       return objc_getAssociatedObject(self, &AssociatedKeys.stylesApplied) as? Bool
     }
@@ -52,19 +75,19 @@ extension UIView {
 public struct Swizzler {
 
     public enum Kind {
-        case Instance
-        case Class
+        case instance
+        case `class`
     }
 
-    public static func swizzle(method: String, cls: AnyClass!, prefix: String = "swizzled", kind: Kind = .Instance) {
+    public static func swizzle(_ method: String, cls: AnyClass!, prefix: String = "swizzled", kind: Kind = .instance) {
         let originalSelector = Selector(method)
         let swizzledSelector = Selector("\(prefix)_\(method)")
 
-        let originalMethod = kind == .Instance
+        let originalMethod = kind == .instance
             ? class_getInstanceMethod(cls, originalSelector)
             : class_getClassMethod(cls, originalSelector)
 
-        let swizzledMethod = kind == .Instance
+        let swizzledMethod = kind == .instance
             ? class_getInstanceMethod(cls, swizzledSelector)
             : class_getClassMethod(cls, swizzledSelector)
 

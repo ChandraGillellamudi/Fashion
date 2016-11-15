@@ -17,7 +17,7 @@ public extension Styleable {
 
    - Parameter stylization: Closure where you can apply styles.
    */
-  public func stylize(stylization: Self -> Void) -> Self {
+  public func stylize(_ stylization: (Self) -> Void) -> Self {
     stylization(self)
     return self
   }

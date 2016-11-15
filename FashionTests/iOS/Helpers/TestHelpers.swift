@@ -15,7 +15,7 @@ struct TestStylesheet: Stylesheet {
 
   func define() {
     register(style, stylization: { (button: UIButton) in
-      button.backgroundColor = UIColor.redColor()
+      button.backgroundColor = UIColor.red
     })
   }
 }
