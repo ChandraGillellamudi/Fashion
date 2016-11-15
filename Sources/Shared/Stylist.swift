@@ -65,6 +65,7 @@ open class Stylist {
 
     return resolved
   }
+
 }
 
 // MARK: - StyleManaging
@@ -115,5 +116,10 @@ extension Stylist: StyleManaging {
    */
   public func unshare<T: Styleable>(_ type: T.Type) {
     sharedStyles.removeValue(forKey: String(describing: type))
+  }
+
+  public func clear() {
+    sharedStyles = [:]
+    styles = [:]
   }
 }
