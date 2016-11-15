@@ -1,14 +1,14 @@
 import Foundation
 
 /// Style keeper, resolver and manager.
-public class Stylist {
+open class Stylist {
 
-  public static let master = Stylist()
+  open static let master = Stylist()
 
-  typealias Stylization = (model: Styleable) -> Void
+  typealias Stylization = (_ model: Styleable) -> Void
 
   var sharedStyles: [String: Stylization] = [:]
-  var styles: [String: Stylization] = [:]
+  var styles: [String: [Stylization]] = [:]
 
   // MARK: - Initialization
 
@@ -22,7 +22,7 @@ public class Stylist {
   - Parameter styles: Names of the style you want to apply in the specified order.
   - Parameter model: `Styleable` view/model.
   */
-  func apply(styles: [String], model: Styleable) -> Void {
+  func apply(_ styles: [String], model: Styleable) -> Void {
     for style in styles {
       apply(style, model: model)
     }
@@ -34,10 +34,11 @@ public class Stylist {
    - Parameter style: Name of the style you want to apply.
    - Parameter model: `Styleable` view/model.
    */
-  func apply(style: String, model: Styleable) -> Void {
-    guard let style = styles[style] else { return }
-
-    style(model: model)
+  func apply(_ style: String, model: Styleable) -> Void {
+    guard let styleList = styles[style] else { return }
+    for style in styleList {
+        style(model)
+    }
   }
 
   /**
@@ -45,20 +46,20 @@ public class Stylist {
 
    - Parameter model: `Styleable` view/model.
    */
-  func applyShared(model: Styleable) -> Bool {
+  func applyShared(_ model: Styleable) -> Bool {
     var resolved = false
-    var type: AnyClass = model.dynamicType
+    var type: AnyClass = type(of: model)
     var typeHierarchy = [type]
 
     while let superclass = class_getSuperclass(type) {
       type = superclass
-      typeHierarchy.insert(type, atIndex: 0)
+      typeHierarchy.insert(type, at: 0)
     }
 
     for modelType in typeHierarchy {
-      guard let style = sharedStyles[String(modelType)] else { continue }
+      guard let style = sharedStyles[String(describing: modelType)] else { continue }
 
-      style(model: model)
+      style(model)
       resolved = true
     }
 
@@ -77,10 +78,12 @@ extension Stylist: StyleManaging {
    - Parameter name: The name of the style you can apply to your view afterwards.
    - Parameter stylization: Closure where you can apply styles.
    */
-  public func register<T: Styleable>(name: StringConvertible, stylization: T -> Void) {
+  public func register<T: Styleable>(_ name: StringConvertible, stylization: @escaping (T) -> Void) {
     let style = Style(process: stylization)
-
-    styles[name.string] = style.applyTo
+    if styles[name.string] == nil {
+        styles[name.string] = []
+    }
+    styles[name.string]!.append(style.applyTo)
   }
 
   /**
@@ -88,8 +91,8 @@ extension Stylist: StyleManaging {
 
    - Parameter name: The name of the style you want to unregister.
    */
-  public func unregister(name: StringConvertible) {
-    styles.removeValueForKey(name.string)
+  public func unregister(_ name: StringConvertible) {
+    styles.removeValue(forKey: name.string)
   }
 
   /**
@@ -99,10 +102,10 @@ extension Stylist: StyleManaging {
 
    - Parameter stylization: Closure where you can apply styles.
    */
-  public func share<T: Styleable>(stylization: T -> Void) {
+  public func share<T: Styleable>(_ stylization: @escaping (T) -> Void) {
     let style = Style(process: stylization)
 
-    sharedStyles[String(T.self)] = style.applyTo
+    sharedStyles[String(describing: T.self)] = style.applyTo
   }
 
   /**
@@ -110,7 +113,7 @@ extension Stylist: StyleManaging {
 
    - Parameter type: The type you want to unregister.
    */
-  public func unshare<T: Styleable>(type: T.Type) {
-    sharedStyles.removeValueForKey(String(type))
+  public func unshare<T: Styleable>(_ type: T.Type) {
+    sharedStyles.removeValue(forKey: String(describing: type))
   }
 }

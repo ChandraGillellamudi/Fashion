@@ -4,7 +4,7 @@
 
  - Parameter stylesheets: Array of stylesheets to be registered.
  */
-public func register(stylesheets: [Stylesheet]) {
+public func register(_ stylesheets: [Stylesheet]) {
   stylesheets.forEach {
     $0.define()
   }

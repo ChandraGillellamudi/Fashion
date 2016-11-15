@@ -2,16 +2,16 @@ import UIKit
 
 extension UIView {
 
-  private struct AssociatedKeys {
+  fileprivate struct AssociatedKeys {
     static var Style = "fashion_StyleAssociatedKey"
   }
 
-  public convenience init(frame: CGRect = CGRectZero, styles: [StringConvertible]) {
+  public convenience init(frame: CGRect = CGRect.zero, styles: [StringConvertible]) {
     self.init(frame: frame)
-    self.styles = styles.map { $0.string } .joinWithSeparator(" ")
+    self.styles = styles.map { $0.string } .joined(separator: " ")
   }
 
-  public convenience init(frame: CGRect = CGRectZero, styles: StringConvertible) {
+  public convenience init(frame: CGRect = CGRect.zero, styles: StringConvertible) {
     self.init(frame: frame)
     stylize(styles)
   }
@@ -22,8 +22,8 @@ extension UIView {
    - Parameter styles: Set of style names.
    */
 
-  public func stylize(styles: StringConvertible...) {
-    self.styles = styles.map { $0.string } .joinWithSeparator(" ")
+  public func stylize(_ styles: StringConvertible...) {
+    self.styles = styles.map { $0.string } .joined(separator: " ")
   }
 
   /**
@@ -47,7 +47,7 @@ extension UIView {
         newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
       if let newValue = newValue {
-        let styles = newValue.componentsSeparatedByString(" ")
+        let styles = newValue.components(separatedBy: " ")
         Stylist.master.apply(styles, model: self)
       }
     }

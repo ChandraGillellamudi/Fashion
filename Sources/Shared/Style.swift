@@ -1,11 +1,11 @@
 /// Stylization closure wrapper.
 final class Style<T: Styleable> {
 
-  let process: (model: T) -> Void
+  let process: (_ model: T) -> Void
 
   // MARK: - Initialization
 
-  init(process: (model: T) -> Void) {
+  init(process: @escaping (_ model: T) -> Void) {
     self.process = process
   }
 
@@ -16,11 +16,11 @@ final class Style<T: Styleable> {
 
   - Parameter model: `Styleable` view/model.
   */
-  func applyTo(model: Styleable) -> Void {
+  func applyTo(_ model: Styleable) -> Void {
     guard let model = model as? T else {
       return
     }
 
-    process(model: model)
+    process(model)
   }
 }
