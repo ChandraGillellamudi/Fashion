@@ -2,8 +2,6 @@ import UIKit
 import Fashion
 
 struct TestEmptyStylesheet: Stylesheet {
-
-  init() {}
   func define() {}
 }
 

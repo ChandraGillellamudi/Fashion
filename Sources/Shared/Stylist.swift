@@ -1,9 +1,9 @@
 import Foundation
 
 /// Style keeper, resolver and manager.
-open class Stylist {
+public final class Stylist {
 
-  open static let master = Stylist()
+  public static let master = Stylist()
 
   typealias Stylization = (_ model: Styleable) -> Void
 
@@ -22,7 +22,7 @@ open class Stylist {
   - Parameter styles: Names of the style you want to apply in the specified order.
   - Parameter model: `Styleable` view/model.
   */
-  func apply(_ styles: [String], model: Styleable) -> Void {
+  func apply(_ styles: [String], model: Styleable) {
     for style in styles {
       apply(style, model: model)
     }
@@ -34,7 +34,7 @@ open class Stylist {
    - Parameter style: Name of the style you want to apply.
    - Parameter model: `Styleable` view/model.
    */
-  func apply(_ style: String, model: Styleable) -> Void {
+  func apply(_ style: String, model: Styleable) {
     guard let styleList = styles[style] else { return }
     for style in styleList {
         style(model)
@@ -46,7 +46,7 @@ open class Stylist {
 
    - Parameter model: `Styleable` view/model.
    */
-  func applyShared(_ model: Styleable) -> Bool {
+  @discardableResult func applyShared(_ model: Styleable) -> Bool {
     var resolved = false
     var type: AnyClass = type(of: model)
     var typeHierarchy = [type]

@@ -16,7 +16,7 @@ final class Style<T: Styleable> {
 
   - Parameter model: `Styleable` view/model.
   */
-  func applyTo(_ model: Styleable) -> Void {
+  func applyTo(_ model: Styleable) {
     guard let model = model as? T else {
       return
     }

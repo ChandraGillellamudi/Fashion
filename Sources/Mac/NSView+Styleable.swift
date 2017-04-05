@@ -31,7 +31,7 @@ public extension NSView {
         newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
       if let newValue = newValue {
-        let styles = newValue.componentsSeparatedByString(" ")
+        let styles = newValue.components(separatedBy: " ")
         Stylist.master.apply(styles, model: self)
       }
     }

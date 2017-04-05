@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "Fashion"
   s.summary          = "Fashion accessories and beauty tools to share and reuse UI styles in a Swifty way"
-  s.version          = "1.1.0"
+  s.version          = "2.0.1"
   s.homepage         = "https://github.com/vadymmarkov/Fashion"
   s.license          = 'MIT'
   s.author           = { "Vadym Markov" => "markov.vadym@gmail.com" }
@@ -13,13 +13,17 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
   s.osx.deployment_target = '10.10'
-  s.tvos.deployment_target = '9.0'
+  s.tvos.deployment_target = '9.2'
 
   s.requires_arc = true
   s.ios.source_files = 'Sources/{iOS,Shared}/**/*'
-  s.tvos.source_files = 'Sources/{iOS,Shared}/**/*'
   s.osx.source_files = 'Sources/{Mac,Shared}/**/*'
+  s.tvos.source_files = 'Sources/{iOS,tvOS,Shared}/**/*'
 
   s.ios.frameworks = 'UIKit', 'Foundation'
+  s.tvos.frameworks = 'UIKit', 'Foundation'
   s.osx.frameworks = 'Cocoa', 'Foundation'
+
+  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3.0' }
+
 end

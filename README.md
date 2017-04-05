@@ -3,6 +3,7 @@
 [![CI Status](http://img.shields.io/travis/vadymmarkov/Fashion.svg?style=flat)](https://travis-ci.org/vadymmarkov/Fashion)
 [![Version](https://img.shields.io/cocoapods/v/Fashion.svg?style=flat)](http://cocoadocs.org/docsets/Fashion)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+![Swift](https://img.shields.io/badge/%20in-swift%203.0-orange.svg)
 [![License](https://img.shields.io/cocoapods/l/Fashion.svg?style=flat)](http://cocoadocs.org/docsets/Fashion)
 [![Platform](https://img.shields.io/cocoapods/p/Fashion.svg?style=flat)](http://cocoadocs.org/docsets/Fashion)
 
@@ -35,7 +36,7 @@ type.
 
 ```swift
 enum Style: String, StringConvertible {
-  case CustomButton
+  case customButton
 
   var string: String {
     return rawValue
@@ -46,15 +47,15 @@ struct MainStylesheet: Stylesheet {
 
   func define() {
     share { (label: UILabel) in
-      label.textColor = UIColor.blueColor()
+      label.textColor = .blue
       label.numberOfLines = 2
       label.adjustsFontSizeToFitWidth = true
     }
 
     // register("custom-button") { (button: UIButton) in
-    register(Style.CustomButton) { (button: UIButton) in
-      button.backgroundColor = UIColor.redColor()
-      button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+    register(Style.customButton) { (button: UIButton) in
+      button.backgroundColor = .red
+      button.setTitleColor(.white, for: .normal)
     }
   }
 }
@@ -69,10 +70,10 @@ Fashion.register([MainStylesheet()])
 
 ```swift
 let button = UIButton() // let button = UIButton(styles: "custom-button")
-button.stylize(Style.CustomButton) // backgroundColor => UIColor.redColor()
+button.stylize(Style.customButton) // backgroundColor => .red
 
 let label = UILabel()
-addSubview(label) // textColor => UIColor.blueColor()
+addSubview(label) // textColor => .blue
 ```
 
 ### Stylesheet
@@ -85,9 +86,9 @@ them in `define` method:
 ```swift
 // Registers stylization closure with the specified name.
 register("card-view") { (view: UIView) in
-  view.backgroundColor = UIColor.whiteColor()
+  view.backgroundColor = .white
   view.layer.masksToBounds = false
-  view.layer.shadowColor = UIColor.blackColor().CGColor
+  view.layer.shadowColor = UIColor.black.cgColor
   view.layer.shadowOffset = CGSize(width: 0, height: 0.5)
   view.layer.shadowOpacity = 0.2
   view.layer.cornerRadius = 8
@@ -109,16 +110,16 @@ inheritance.
 ```swift
 // All views will have red background color.
 share { (view: UIView) in
-  view.backgroundColor = UIColor.redColor()
+  view.backgroundColor = .red
 }
 
 // All table views will have white background color, it overrides the red
 // background registered above.
 share { (tableView: UITableView) in
-  tableView.backgroundColor = UIColor.whiteColor()
+  tableView.backgroundColor = .white
   tableView.tableFooterView = UIView(frame: CGRect.zero)
-  tableView.separatorStyle = .None
-  tableView.separatorInset = UIEdgeInsetsZero
+  tableView.separatorStyle = .none
+  tableView.separatorInset = .zero
 }
 ```
 
@@ -139,8 +140,8 @@ default styles set on the class’s appearance proxy when a view enters a window
 shareAppearance { (barButtonItem: UIBarButtonItem) in
   barButtonItem.setTitleTextAttributes([
     NSFontAttributeName : UIFont(name: "HelveticaNeue-Light", size: 12)!,
-    NSForegroundColorAttributeName : UIColor.redColor()],
-    forState: .Normal)
+    NSForegroundColorAttributeName : UIColor.red],
+    for: .normal)
 }
 ```
 
@@ -155,15 +156,15 @@ use the global variable `Stylist.master` which is used in stylesheets.
 let stylist = Stylist()
 
 stylist.register("card-view") { (view: UIView) in
-  view.backgroundColor = UIColor.whiteColor()
+  view.backgroundColor = .white
   view.layer.cornerRadius = 8
 }
 
 stylist.unregister("card-view")
 
 stylist.share { (tableView: UITableView) in
-  tableView.backgroundColor = UIColor.whiteColor()
-  tableView.tableFooterView = UIView(frame: CGRect.zero)
+  tableView.backgroundColor = .white
+  tableView.tableFooterView = UIView(frame: .zero)
 }
 
 stylist.unshare(UITableView.self)
@@ -188,9 +189,9 @@ let label = UILabel(styles: "content-view cool-label")
 // than magic String could also be used
 
 enum Style: String, StringConvertible {
-  case CustomButton
-  case ContentView
-  case CoolLabel
+  case customButton
+  case contentView
+  case coolLabel
 
   var string: String {
     return rawValue
@@ -198,10 +199,10 @@ enum Style: String, StringConvertible {
 }
 
 // A single style
-let button = UIButton(styles: Style.CustomButton)
+let button = UIButton(styles: Style.customButton)
 
 // Multiple styles
-let label = UILabel(styles: [Style.ContentView, Style.CoolLabel])
+let label = UILabel(styles: [Style.contentView, Style.coolLabel])
 ```
 
 **With `stylize` function**
@@ -210,7 +211,7 @@ let label = UILabel(styles: [Style.ContentView, Style.CoolLabel])
 let label = UILabel()
 
 // StringConvertible
-label.stylize(Style.ContentView, Style.CoolLabel)
+label.stylize(Style.contentView, Style.coolLabel)
 
 // String
 label.stylize("content-view", "cool-label")

@@ -24,7 +24,7 @@ public protocol StyleManaging {
 
    - Parameter stylization: Closure where you can apply styles.
    */
-  func share<T: Styleable>(_ stylization:  @escaping (T) -> Void)
+  func share<T: Styleable>(_ stylization: @escaping (T) -> Void)
 
   /**
    Unregisters shared stylization closure for the specified type.
